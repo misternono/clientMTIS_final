@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Duty Free - Cliente de Integración</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header text-center">
+            <h1>Tienda Duty Free - Cliente de Integración</h1>
+            <p class="lead">Sistema de procesamiento de ventas integrado con MuleSoft</p>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="venta-tab" data-bs-toggle="tab" data-bs-target="#venta" type="button" role="tab" aria-controls="venta" aria-selected="true">Procesar Venta</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="response-tab" data-bs-toggle="tab" data-bs-target="#response" type="button" role="tab" aria-controls="response" aria-selected="false">Respuesta API</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="venta" role="tabpanel" aria-labelledby="venta-tab">
+                <form id="shopForm">
+                    <div class="form-section">
+                        <h3>Información del Cliente</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="clienteId" class="form-label">ID del Cliente (Opcional)</label>
+                                <input type="text" class="form-control" id="clienteId" placeholder="ej. CLI007">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="idTransaccionCliente" class="form-label">ID de Transacción Cliente</label>
+                                <input type="text" class="form-control" id="idTransaccionCliente" value="TPV001-20250519-000123">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Datos de Pago</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="tipoPago" class="form-label">Tipo de Pago</label>
+                                <select class="form-control" id="tipoPago">
+                                    <option value="tarjetaTokenizada">Tarjeta Tokenizada</option>
+                                    <option value="referenciaPago">Referencia de Pago</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="valorPago" class="form-label">Valor del Pago</label>
+                                <input type="text" class="form-control" id="valorPago" value="tok_1JtxyzGF...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3>Productos a Comprar</h3>
+                            <button type="button" class="btn btn-shop" id="addItemBtn">
+                                <i class="bi bi-plus-circle"></i> Añadir Producto
+                            </button>
+                        </div>
+
+                        <div id="itemsContainer">
+                            <div class="item-row">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="productoId0" class="form-label">ID del Producto</label>
+                                        <input type="text" class="form-control" id="productoId0" name="productoId" value="producto567">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="cantidad0" class="form-label">Cantidad</label>
+                                        <input type="number" class="form-control" id="cantidad0" name="cantidad" value="2" min="1">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="precioUnitarioOriginal0" class="form-label">Precio Unitario (€)</label>
+                                        <input type="number" class="form-control" id="precioUnitarioOriginal0" name="precioUnitarioOriginal" value="89.99" step="0.01">
+                                    </div>
+                                    <div class="col-md-1 mb-3 d-flex align-items-end">
+                                        <button type="button" class="btn btn-danger remove-item-btn" style="display: none;">X</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Configuración de la API</h3>
+                        <div class="mb-3">
+                            <label for="apiUrl" class="form-label">URL de la API</label>
+                            <input type="url" class="form-control" id="apiUrl" value="http://localhost:9999/shop" required>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-shop btn-lg">Procesar Compra</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="response" role="tabpanel" aria-labelledby="response-tab">
+                <div class="form-section">
+                    <h3>Respuesta de la API</h3>
+                    <pre id="responseOutput">Aquí se mostrará la respuesta de la API cuando se procese la compra...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const shopForm = document.getElementById('shopForm');
+            const itemsContainer = document.getElementById('itemsContainer');
+            const addItemBtn = document.getElementById('addItemBtn');
+            const responseOutput = document.getElementById('responseOutput');
+            const responseTab = document.getElementById('response-tab');
+            
+            let itemCount = 1; // Start with 1 because we already have one item
+            
+            // Add new item
+            addItemBtn.addEventListener('click', function() {
+                const newItem = document.createElement('div');
+                newItem.className = 'item-row';
+                newItem.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="productoId${itemCount}" class="form-label">ID del Producto</label>
+                            <input type="text" class="form-control" id="productoId${itemCount}" name="productoId" value="producto${567 + itemCount}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="cantidad${itemCount}" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="cantidad${itemCount}" name="cantidad" value="1" min="1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="precioUnitarioOriginal${itemCount}" class="form-label">Precio Unitario (€)</label>
+                            <input type="number" class="form-control" id="precioUnitarioOriginal${itemCount}" name="precioUnitarioOriginal" value="${(Math.random() * 100 + 10).toFixed(2)}" step="0.01">
+                        </div>
+                        <div class="col-md-1 mb-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger remove-item-btn">X</button>
+                        </div>
+                    </div>
+                `;
+                
+                itemsContainer.appendChild(newItem);
+                itemCount++;
+                
+                // Show the remove button on the first item if we have more than one item
+                if (itemCount > 1) {
+                    document.querySelectorAll('.remove-item-btn').forEach(btn => {
+                        btn.style.display = 'block';
+                    });
+                }
+                
+                // Add event listener to the new remove button
+                const removeButtons = document.querySelectorAll('.remove-item-btn');
+                removeButtons.forEach(btn => {
+                    btn.addEventListener('click', removeItem);
+                });
+            });
+            
+            // Remove item function
+            function removeItem(e) {
+                if (itemCount > 1) {
+                    e.target.closest('.item-row').remove();
+                    itemCount--;
+                    
+                    // Hide the remove button on the first item if we only have one item
+                    if (itemCount === 1) {
+                        document.querySelector('.remove-item-btn').style.display = 'none';
+                    }
+                }
+            }
+            
+            // Handle form submission
+            shopForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const apiUrl = document.getElementById('apiUrl').value;
+                const clienteId = document.getElementById('clienteId').value;
+                const idTransaccionCliente = document.getElementById('idTransaccionCliente').value;
+                const tipoPago = document.getElementById('tipoPago').value;
+                const valorPago = document.getElementById('valorPago').value;
+                
+                // Get all items
+                const itemRows = itemsContainer.querySelectorAll('.item-row');
+                const itemsComprar = [];
+                
+                itemRows.forEach((item, index) => {
+                    const productoId = document.getElementById(`productoId${index}`).value;
+                    const cantidad = parseInt(document.getElementById(`cantidad${index}`).value);
+                    const precioUnitarioOriginal = parseFloat(document.getElementById(`precioUnitarioOriginal${index}`).value);
+                    
+                    itemsComprar.push({
+                        productoId: productoId,
+                        cantidad: cantidad,
+                        precioUnitarioOriginal: precioUnitarioOriginal
+                    });
+                });
+                
+                // Construct the request body
+                const requestBody = {
+                    clienteId: clienteId || null,
+                    detallePago: {
+                        tipo: tipoPago,
+                        valor: valorPago
+                    },
+                    itemsComprar: itemsComprar,
+                    idTransaccionCliente: idTransaccionCliente
+                };
+                
+                // Send API request
+                sendApiRequest(apiUrl, requestBody);
+            });
+            
+            // Function to send API request
+            function sendApiRequest(url, requestBody) {
+                responseOutput.textContent = 'Enviando solicitud...';
+                responseTab.click(); // Switch to response tab
+                
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw { status: response.status, data: errorData };
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Display the response
+                    responseOutput.textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    if (error.data) {
+                        responseOutput.textContent = `Error ${error.status}:\n${JSON.stringify(error.data, null, 2)}`;
+                    } else {
+                        responseOutput.textContent = `Error:\n${error.message}\n\nNota: Si estás experimentando problemas de conexión, verifica que:
+1. El servicio MuleSoft esté ejecutándose en la URL correcta
+2. No haya problemas de CORS (Cross-Origin Resource Sharing)
+3. La red permita la conexión al servicio`;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

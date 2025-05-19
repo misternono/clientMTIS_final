@@ -1,85 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baggage Registration SOAP Client</title>
+    <title>Sistema de Integración Aeroportuaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Baggage Registration SOAP Client</h1>
-        
-        <form id="soapForm">
-            <div class="form-group">
-                <label for="soapUrl">SOAP Service URL:</label>
-                <input type="url" id="soapUrl" name="soapUrl" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="documentID">Document ID:</label>
-                <input type="text" id="documentID" name="documentID">
-            </div>
-            
-            <div class="form-group">
-                <label for="numReserva">Reservation Number:</label>
-                <input type="text" id="numReserva" name="numReserva" value="123">
-            </div>
-            
-            <div class="form-group">
-                <label for="idCheckin">Check-in ID:</label>
-                <input type="text" id="idCheckin" name="idCheckin" value="ci-01-uuid">
-            </div>
-            
-            <h2>Baggage Information</h2>
-            <div id="baggageContainer">
-                <div class="baggage-item">
-                    <div class="form-group">
-                        <label for="idEquipaje0">Baggage ID:</label>
-                        <input type="number" id="idEquipaje0" name="idEquipaje" value="0">
+        <div class="header text-center">
+            <h1 class="main-title">Sistema de Integración Aeroportuaria</h1>
+            <p class="lead mb-0">Plataforma de servicios para la gestión eficiente de operaciones</p>
+        </div>
+
+        <p class="info-text">Esta plataforma proporciona acceso a múltiples servicios de integración para operaciones aeroportuarias. Selecciona uno de los flujos disponibles para comenzar.</p>
+
+        <div class="row">
+            <!-- Flujo 1: Cliente SOAP para registro de equipaje -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-luggage flow-icon soap-icon"></i>
+                        <div>
+                            <h5 class="card-title mb-0">Registro de Equipaje</h5>
+                            <span class="status-badge status-implemented">Implementado</span>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="peso0">Weight:</label>
-                        <input type="number" id="peso0" name="peso" value="45">
+                    <div class="card-body">
+                        <p class="card-text">Cliente SOAP para el registro de equipaje en el sistema de gestión aeroportuaria. Permite el envío de información detallada sobre el equipaje asociado a un check-in.</p>
+                        <ul class="mb-0">
+                            <li>Integración mediante SOAP XML</li>
+                            <li>Registro de múltiples piezas de equipaje</li>
+                            <li>Soporte para manejo especial</li>
+                        </ul>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="dimensiones0">Dimensions:</label>
-                        <input type="number" id="dimensiones0" name="dimensiones" value="5">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="manejoEspecial0">Special Handling:</label>
-                        <select id="manejoEspecial0" name="manejoEspecial">
-                            <option value="false">No</option>
-                            <option value="true">Yes</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="notasManejoEspecial0">Special Handling Notes:</label>
-                        <textarea id="notasManejoEspecial0" name="notasManejoEspecial"></textarea>
+                    <div class="card-footer">
+                        <a href="flujos/baggage.html" class="btn btn-primary w-100">Acceder</a>
                     </div>
                 </div>
             </div>
-            
-            <div class="button-group">
-                <button type="button" id="addBaggageBtn">Add Another Baggage</button>
-                <button type="button" id="removeBaggageBtn">Remove Last Baggage</button>
+
+            <!-- Flujo 2: Tienda Duty Free -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-shop flow-icon shop-icon"></i>
+                        <div>
+                            <h5 class="card-title mb-0">Tienda Duty Free</h5>
+                            <span class="status-badge status-implemented">Implementado</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Sistema de gestión de ventas para tiendas Duty Free. Procesa transacciones de venta, verifica stock y genera confirmaciones de compra.</p>
+                        <ul class="mb-0">
+                            <li>Integración con sistema de pagos</li>
+                            <li>Gestión de inventario en tiempo real</li>
+                            <li>Notificaciones a proveedores</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="flujos/dutyfree.html" class="btn btn-warning w-100">Acceder</a>
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-actions">
-                <button type="submit" id="submitBtn">Send SOAP Request</button>
+
+            <!-- Flujo 3: Por implementar -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 disabled-card">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-airplane flow-icon"></i>
+                        <div>
+                            <h5 class="card-title mb-0">Control de Embarque</h5>
+                            <span class="status-badge status-pending">Por implementar</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Sistema de gestión de acceso a puertas de embarque. Verifica tarjetas de embarque y controla el acceso de pasajeros.</p>
+                        <ul class="mb-0">
+                            <li>Validación de documentos</li>
+                            <li>Control de aforo</li>
+                            <li>Gestión de prioridades de embarque</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-secondary w-100" disabled>Próximamente</button>
+                    </div>
+                </div>
             </div>
-        </form>
-        
-        <div class="response-container">
-            <h2>Response</h2>
-            <pre id="responseOutput"></pre>
+
+            <!-- Flujo 4: Por implementar -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 disabled-card">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-calendar-check flow-icon"></i>
+                        <div>
+                            <h5 class="card-title mb-0">Gestión de Reservas</h5>
+                            <span class="status-badge status-pending">Por implementar</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Plataforma para la gestión de reservas de vuelos. Permite crear, modificar y cancelar reservas.</p>
+                        <ul class="mb-0">
+                            <li>Integración con sistemas de aerolíneas</li>
+                            <li>Notificaciones automáticas</li>
+                            <li>Gestión de pagos</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-secondary w-100" disabled>Próximamente</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flujo 5: Por implementar -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 disabled-card">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-buildings flow-icon"></i>
+                        <div>
+                            <h5 class="card-title mb-0">Gestión de Instalaciones</h5>
+                            <span class="status-badge status-pending">Por implementar</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Sistema de gestión de instalaciones aeroportuarias. Control de mantenimiento y disponibilidad de recursos.</p>
+                        <ul class="mb-0">
+                            <li>Programación de mantenimientos</li>
+                            <li>Monitorización de estado</li>
+                            <li>Gestión de incidencias</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-secondary w-100" disabled>Próximamente</button>
+                    </div>
+                </div>
+            </div>
         </div>
+        
+        <footer class="text-center mt-5 text-muted">
+            <p>Sistema de Integración Aeroportuaria - MTIS &copy; 2024</p>
+        </footer>
     </div>
-    
-    <script src="script.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 
