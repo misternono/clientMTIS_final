@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baggage Registration SOAP Client</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Baggage Registration SOAP Client</h1>
+        
+        <form id="soapForm">
+            <div class="form-group">
+                <label for="soapUrl">SOAP Service URL:</label>
+                <input type="url" id="soapUrl" name="soapUrl" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="documentID">Document ID:</label>
+                <input type="text" id="documentID" name="documentID">
+            </div>
+            
+            <div class="form-group">
+                <label for="numReserva">Reservation Number:</label>
+                <input type="text" id="numReserva" name="numReserva" value="123">
+            </div>
+            
+            <div class="form-group">
+                <label for="idCheckin">Check-in ID:</label>
+                <input type="text" id="idCheckin" name="idCheckin" value="ci-01-uuid">
+            </div>
+            
+            <h2>Baggage Information</h2>
+            <div id="baggageContainer">
+                <div class="baggage-item">
+                    <div class="form-group">
+                        <label for="idEquipaje0">Baggage ID:</label>
+                        <input type="number" id="idEquipaje0" name="idEquipaje" value="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="peso0">Weight:</label>
+                        <input type="number" id="peso0" name="peso" value="45">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dimensiones0">Dimensions:</label>
+                        <input type="number" id="dimensiones0" name="dimensiones" value="5">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="manejoEspecial0">Special Handling:</label>
+                        <select id="manejoEspecial0" name="manejoEspecial">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notasManejoEspecial0">Special Handling Notes:</label>
+                        <textarea id="notasManejoEspecial0" name="notasManejoEspecial"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="button" id="addBaggageBtn">Add Another Baggage</button>
+                <button type="button" id="removeBaggageBtn">Remove Last Baggage</button>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" id="submitBtn">Send SOAP Request</button>
+            </div>
+        </form>
+        
+        <div class="response-container">
+            <h2>Response</h2>
+            <pre id="responseOutput"></pre>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
