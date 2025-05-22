@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cliente SOAP - Procesar Pasajero</title>
+  <link rel="stylesheet" href="../style.css"><!-- tu CSS -->
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Cliente SOAP - Procesar Pasajero</h1>
+    </div>
+
+    <form id="soapForm">
+      <div class="form-group">
+        <label for="soapUrl">SOAP Service URL:</label>
+        <input type="url" id="soapUrl" name="soapUrl"
+               value="http://localhost:8081/ProcesoPasajeroService/ProcesoPasajeroSoap"
+               required>
+      </div>
+
+      <div class="form-group">
+        <label for="numeroReserva">Número de Reserva:</label>
+        <input type="text" id="numeroReserva" name="numeroReserva"
+               value="IB123" required>
+      </div>
+
+      <div class="form-group">
+        <label for="documentoIdentidad">Documento de Identidad:</label>
+        <input type="text" id="documentoIdentidad" name="documentoIdentidad"
+               value="A1234567" required>
+      </div>
+
+      <div class="form-group">
+        <label for="datosAdicionales">Datos Adicionales:</label>
+        <input type="text" id="datosAdicionales" name="datosAdicionales">
+      </div>
+
+      <div class="form-group">
+        <label for="zona">Zona:</label>
+        <input type="text" id="zona" name="zona">
+      </div>
+
+      <div class="form-group">
+        <label for="solicitarAccesoVIP">Solicitar Acceso VIP:</label>
+        <select id="solicitarAccesoVIP" name="solicitarAccesoVIP">
+          <option value="false">No</option>
+          <option value="true">Sí</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="codigoVuelo">Código de Vuelo:</label>
+        <input type="text" id="codigoVuelo" name="codigoVuelo">
+      </div>
+
+      <div class="form-group">
+        <label for="enviarNotificacion">Enviar Notificación:</label>
+        <select id="enviarNotificacion" name="enviarNotificacion">
+          <option value="false">No</option>
+          <option value="true">Sí</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="destinatarioNotificacion">Destinatario Notificación:</label>
+        <input type="email" id="destinatarioNotificacion" name="destinatarioNotificacion">
+      </div>
+
+      <div class="form-group">
+        <label for="mensajeNotificacion">Mensaje Notificación:</label>
+        <textarea id="mensajeNotificacion" name="mensajeNotificacion"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="canalNotificacion">Canal Notificación:</label>
+        <input type="text" id="canalNotificacion" name="canalNotificacion">
+      </div>
+
+      <div class="form-group">
+        <label for="reportarIncidencia">Reportar Incidencia:</label>
+        <select id="reportarIncidencia" name="reportarIncidencia">
+          <option value="false">No</option>
+          <option value="true">Sí</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="codigoIncidente">Código Incidente:</label>
+        <input type="text" id="codigoIncidente" name="codigoIncidente">
+      </div>
+
+      <div class="form-group">
+        <label for="descripcionIncidente">Descripción Incidente:</label>
+        <textarea id="descripcionIncidente" name="descripcionIncidente"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" id="submitBtn" class="btn">Enviar SOAP Request</button>
+      </div>
+    </form>
+
+    <div class="response-container">
+      <h2>Respuesta del Servicio</h2>
+      <pre id="responseOutput"></pre>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('soapForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const url = document.getElementById('soapUrl').value;
+      const data = {
+        numeroReserva: document.getElementById('numeroReserva').value,
+        documentoIdentidad: document.getElementById('documentoIdentidad').value,
+        datosAdicionales: document.getElementById('datosAdicionales').value || '?',
+        zona: document.getElementById('zona').value || '?',
+        solicitarAccesoVIP: document.getElementById('solicitarAccesoVIP').value,
+        codigoVuelo: document.getElementById('codigoVuelo').value || '?',
+        enviarNotificacion: document.getElementById('enviarNotificacion').value,
+        destinatarioNotificacion: document.getElementById('destinatarioNotificacion').value || '?',
+        mensajeNotificacion: document.getElementById('mensajeNotificacion').value || '?',
+        canalNotificacion: document.getElementById('canalNotificacion').value || '?',
+        reportarIncidencia: document.getElementById('reportarIncidencia').value,
+        codigoIncidente: document.getElementById('codigoIncidente').value || '?',
+        descripcionIncidente: document.getElementById('descripcionIncidente').value || '?'
+      };
+
+      const soapEnvelope = `
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:proc="http://www.example.org/procesopasajero/">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <proc:ProcesarPasajeroRequest>
+      <numeroReserva>${data.numeroReserva}</numeroReserva>
+      <documentoIdentidad>${data.documentoIdentidad}</documentoIdentidad>
+      <datosAdicionales>${data.datosAdicionales}</datosAdicionales>
+      <zona>${data.zona}</zona>
+      <solicitarAccesoVIP>${data.solicitarAccesoVIP}</solicitarAccesoVIP>
+      <codigoVuelo>${data.codigoVuelo}</codigoVuelo>
+      <enviarNotificacion>${data.enviarNotificacion}</enviarNotificacion>
+      <destinatarioNotificacion>${data.destinatarioNotificacion}</destinatarioNotificacion>
+      <mensajeNotificacion>${data.mensajeNotificacion}</mensajeNotificacion>
+      <canalNotificacion>${data.canalNotificacion}</canalNotificacion>
+      <reportarIncidencia>${data.reportarIncidencia}</reportarIncidencia>
+      <codigoIncidente>${data.codigoIncidente}</codigoIncidente>
+      <descripcionIncidente>${data.descripcionIncidente}</descripcionIncidente>
+    </proc:ProcesarPasajeroRequest>
+  </soapenv:Body>
+</soapenv:Envelope>`;
+
+      const out = document.getElementById('responseOutput');
+      out.textContent = 'Enviando petición...';
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/xml;charset=UTF-8',
+          'SOAPAction': '' // si tu servicio lo requiere, pon aquí la acción
+        },
+        body: soapEnvelope
+      })
+      .then(resp => resp.ok ? resp.text() : Promise.reject(`Status ${resp.status}`))
+      .then(text => out.textContent = text)
+      .catch(err => {
+        let msg = `Error: ${err}\n\nPetición SOAP enviada:\n${soapEnvelope}`;
+        if (err.includes('Failed to fetch')) {
+          msg += '\n\nNota: Puede ser un problema de CORS.';
+        }
+        out.textContent = msg;
+      });
+    });
+  </script>
+</body>
+</html>

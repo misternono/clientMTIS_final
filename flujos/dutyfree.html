@@ -26,6 +26,26 @@
 
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="venta" role="tabpanel" aria-labelledby="venta-tab">
+                <div class="form-section mb-4">
+                    <h3>Escenarios de Prueba</h3>
+                    <p class="text-muted">Selecciona un escenario para probar:</p>
+                    
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-success test-scenario" data-scenario="exitoso">
+                            Escenario Exitoso
+                        </button>
+                        <button type="button" class="btn btn-danger test-scenario" data-scenario="sinFondos">
+                            Error: Fondos Insuficientes
+                        </button>
+                        <button type="button" class="btn btn-danger test-scenario" data-scenario="tarjetaInexistente">
+                            Error: Tarjeta No Existe
+                        </button>
+                        <button type="button" class="btn btn-danger test-scenario" data-scenario="stockInsuficiente">
+                            Error: Stock Insuficiente
+                        </button>
+                    </div>
+                </div>
+
                 <form id="shopForm">
                     <div class="form-section">
                         <h3>Información del Cliente</h3>
@@ -93,7 +113,7 @@
                         <h3>Configuración de la API</h3>
                         <div class="mb-3">
                             <label for="apiUrl" class="form-label">URL de la API</label>
-                            <input type="url" class="form-control" id="apiUrl" value="http://localhost:9999/shop" required>
+                            <input type="url" class="form-control" id="apiUrl" value="https://bf2d-2a09-bac5-30f4-191-00-28-cf.ngrok-free.app/api/shop" required>
                         </div>
                     </div>
 
@@ -122,6 +142,108 @@
             const responseTab = document.getElementById('response-tab');
             
             let itemCount = 1; // Start with 1 because we already have one item
+            
+            // Test scenarios
+            const scenarios = {
+                // Escenario Exitoso - Cliente con fondos y productos con stock
+                exitoso: {
+                    clienteId: "cliente456",
+                    idTransaccionCliente: "TPV001-20250519-000131",
+                    tipoPago: "tarjetaTokenizada",
+                    valorPago: "tarjeta456",
+                    items: [
+                        { productoId: "producto567", cantidad: 2, precio: 89.99 },
+                        { productoId: "producto789", cantidad: 1, precio: 25.75 }
+                    ]
+                },
+                // Error: Fondos Insuficientes
+                sinFondos: {
+                    clienteId: "cliente123",
+                    idTransaccionCliente: "TPV001-20250519-000125",
+                    tipoPago: "tarjetaTokenizada", 
+                    valorPago: "tarjeta123",
+                    items: [
+                        { productoId: "producto890", cantidad: 3, precio: 199.99 }
+                    ]
+                },
+                // Error: Tarjeta No Existe
+                tarjetaInexistente: {
+                    clienteId: "cliente123",
+                    idTransaccionCliente: "TPV001-20250519-000127",
+                    tipoPago: "tarjetaTokenizada",
+                    valorPago: "tarjeta_inexistente",
+                    items: [
+                        { productoId: "producto567", cantidad: 1, precio: 89.99 }
+                    ]
+                },
+                // Error: Stock Insuficiente
+                stockInsuficiente: {
+                    clienteId: "cliente456",
+                    idTransaccionCliente: "TPV001-20250519-000129",
+                    tipoPago: "tarjetaTokenizada",
+                    valorPago: "tarjeta456",
+                    items: [
+                        { productoId: "producto678", cantidad: 20, precio: 120.50 }
+                    ]
+                }
+            };
+            
+            // Load test scenario
+            document.querySelectorAll('.test-scenario').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const scenarioKey = this.getAttribute('data-scenario');
+                    const scenario = scenarios[scenarioKey];
+                    
+                    if (!scenario) return;
+                    
+                    // Load client and transaction data
+                    document.getElementById('clienteId').value = scenario.clienteId;
+                    document.getElementById('idTransaccionCliente').value = scenario.idTransaccionCliente;
+                    document.getElementById('tipoPago').value = scenario.tipoPago;
+                    document.getElementById('valorPago').value = scenario.valorPago;
+                    
+                    // Reset items container
+                    itemsContainer.innerHTML = '';
+                    
+                    // Add items from scenario
+                    scenario.items.forEach((item, index) => {
+                        const itemRow = document.createElement('div');
+                        itemRow.className = 'item-row';
+                        itemRow.innerHTML = `
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="productoId${index}" class="form-label">ID del Producto</label>
+                                    <input type="text" class="form-control" id="productoId${index}" name="productoId" value="${item.productoId}">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="cantidad${index}" class="form-label">Cantidad</label>
+                                    <input type="number" class="form-control" id="cantidad${index}" name="cantidad" value="${item.cantidad}" min="1">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="precioUnitarioOriginal${index}" class="form-label">Precio Unitario (€)</label>
+                                    <input type="number" class="form-control" id="precioUnitarioOriginal${index}" name="precioUnitarioOriginal" value="${item.precio}" step="0.01">
+                                </div>
+                                <div class="col-md-1 mb-3 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger remove-item-btn" ${index === 0 && scenario.items.length === 1 ? 'style="display: none;"' : ''}>X</button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        itemsContainer.appendChild(itemRow);
+                    });
+                    
+                    // Update itemCount
+                    itemCount = scenario.items.length;
+                    
+                    // Add event listeners to remove buttons
+                    document.querySelectorAll('.remove-item-btn').forEach(btn => {
+                        btn.addEventListener('click', removeItem);
+                    });
+                    
+                    // Show success message
+                    alert(`Escenario "${scenarioKey}" cargado correctamente.`);
+                });
+            });
             
             // Add new item
             addItemBtn.addEventListener('click', function() {

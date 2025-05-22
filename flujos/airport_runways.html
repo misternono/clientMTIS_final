@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pistas - Cliente de Integración</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h1>Gestion de Pistas Aeropuerto</h1>
+            <p class="lead">Ingresa el número de vuelo para solicitar una pista en el aeropuerto</p>
+        </div>
+
+        <form id="flightForm" class="mb-4">
+            <div class="mb-3">
+                <label for="numVuelo" class="form-label">Número de Vuelo</label>
+                <input type="text" class="form-control" id="numVuelo" placeholder="Ej. AB123" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Consultar Pista</button>
+            </div>
+        </form>
+
+        <div class="form-section">
+            <h4>Respuesta de la API</h4>
+            <pre id="responseOutput">Aquí se mostrará la respuesta...</pre>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('flightForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const numVuelo = document.getElementById('numVuelo').value.trim();
+            const responseOutput = document.getElementById('responseOutput');
+
+            if (!numVuelo) {
+                responseOutput.textContent = "Por favor, introduce un número de vuelo.";
+                return;
+            }
+
+            responseOutput.textContent = 'Consultando pista...';
+
+            // Configuración para evitar la advertencia de ngrok
+            const ngrokUrl = 'https://9798-79-150-139-194.ngrok-free.app/solicitarPista/' + encodeURIComponent(numVuelo);
+            
+            fetch(ngrokUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'  // Cabecera especial para evitar la advertencia
+                },
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw { status: response.status, data };
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                if (error.data) {
+                    responseOutput.textContent = `Error ${error.status}:\n${JSON.stringify(error.data, null, 2)}`;
+                } else {
+                    responseOutput.textContent = `Error al consultar la pista.\n${error.message}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -6,7 +6,7 @@
     <title>Sistema de Integración Aeroportuaria</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> <!-- Asegúrate que style.css tiene los estilos que quieres para los cards -->
 </head>
 <body>
     <div class="container">
@@ -19,7 +19,7 @@
 
         <div class="row">
             <!-- Flujo 1: Cliente SOAP para registro de equipaje -->
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-4 mb-4"> <!-- Añadido mb-4 para espaciado si las filas se rompen -->
                 <div class="card h-100">
                     <div class="card-header d-flex align-items-center">
                         <i class="bi bi-luggage flow-icon soap-icon"></i>
@@ -43,7 +43,7 @@
             </div>
 
             <!-- Flujo 2: Tienda Duty Free -->
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card h-100">
                     <div class="card-header d-flex align-items-center">
                         <i class="bi bi-shop flow-icon shop-icon"></i>
@@ -61,19 +61,19 @@
                         </ul>
                     </div>
                     <div class="card-footer">
-                        <a href="flujos/dutyfree.html" class="btn btn-warning w-100">Acceder</a>
+                        <a href="flujos/dutyfree.html" class="btn btn-primary w-100">Acceder</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Flujo 3: Por implementar -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 disabled-card">
+            <!-- Flujo 3: Checkin -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
                     <div class="card-header d-flex align-items-center">
-                        <i class="bi bi-airplane flow-icon"></i>
+                        <i class="bi bi-airplane flow-icon"></i> <!-- Icono genérico de avión -->
                         <div>
                             <h5 class="card-title mb-0">Control de Embarque</h5>
-                            <span class="status-badge status-pending">Por implementar</span>
+                            <span class="status-badge status-implemented">Implementado</span>
                         </div>
                     </div>
                     <div class="card-body">
@@ -85,65 +85,65 @@
                         </ul>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-secondary w-100" disabled>Próximamente</button>
+                        <a href="flujos/checkin.html" class="btn btn-primary w-100">Acceder</a> <!-- Cambiado a btn-info por variedad -->
                     </div>
                 </div>
             </div>
 
-            <!-- Flujo 4: Por implementar -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 disabled-card">
+            <!-- Flujo 4: NUEVO - Cliente de Orquestación de Vuelos (reemplaza Gestión de Reservas) -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100"> <!-- Quitado disabled-card -->
                     <div class="card-header d-flex align-items-center">
-                        <i class="bi bi-calendar-check flow-icon"></i>
+                        <i class="bi bi-airplane-engines flow-icon flight-ops-icon"></i> <!-- Nuevo icono sugerido, o usa bi-airplane -->
                         <div>
-                            <h5 class="card-title mb-0">Gestión de Reservas</h5>
-                            <span class="status-badge status-pending">Por implementar</span>
+                            <h5 class="card-title mb-0">Orquestación de Operaciones de Vuelo</h5> <!-- Nuevo Título -->
+                            <span class="status-badge status-implemented">Implementado</span> <!-- Nuevo Estado -->
                         </div>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">Plataforma para la gestión de reservas de vuelos. Permite crear, modificar y cancelar reservas.</p>
+                        <p class="card-text">Cliente para solicitar y orquestar operaciones de vuelo completas, incluyendo asignación de puertas y gestión de servicios en tierra a través de MuleSoft.</p> <!-- Nueva Descripción -->
                         <ul class="mb-0">
-                            <li>Integración con sistemas de aerolíneas</li>
-                            <li>Notificaciones automáticas</li>
-                            <li>Gestión de pagos</li>
+                            <li>Integración con API MuleSoft</li>
+                            <li>Asignación dinámica de puertas</li>
+                            <li>Simulación de ciclo de vida del vuelo</li>
                         </ul>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-secondary w-100" disabled>Próximamente</button>
+                        <a href="flujos/booking.html" class="btn btn-primary w-100">Acceder</a> <!-- Enlace a tu cliente HTML y nuevo color de botón -->
                     </div>
                 </div>
             </div>
 
-            <!-- Flujo 5: Por implementar -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 disabled-card">
+            <!-- Flujo 5: Gestion de Pistas -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
                     <div class="card-header d-flex align-items-center">
-                        <i class="bi bi-buildings flow-icon"></i>
+                        <i class="bi bi-toggles flow-icon pistas-icon"></i>
                         <div>
-                            <h5 class="card-title mb-0">Gestión de Instalaciones</h5>
-                            <span class="status-badge status-pending">Por implementar</span>
+                            <h5 class="card-title mb-0">Gestión de Pistas</h5>
+                            <span class="status-badge status-implemented">Implementado</span>
                         </div>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">Sistema de gestión de instalaciones aeroportuarias. Control de mantenimiento y disponibilidad de recursos.</p>
+                        <p class="card-text">Plataforma para la gestión de las pistas del aeropuerto. Permite asignar pistas a un vuelo, a parte de notificar si hubiera alguna incidencia o emergencia.</p>
                         <ul class="mb-0">
-                            <li>Programación de mantenimientos</li>
-                            <li>Monitorización de estado</li>
-                            <li>Gestión de incidencias</li>
+                            <li>Integración mediante REST</li>
+                            <li>Gestion de disponibilidad y gestion de las pistas del aeropuerto</li>
+                            <li>Gestión de problemas y emergencias mediante notificaciones</li>
                         </ul>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-secondary w-100" disabled>Próximamente</button>
+                        <a href="flujos/airport_runways.html" class="btn btn-primary w-100">Acceder</a>
                     </div>
                 </div>
             </div>
         </div>
         
         <footer class="text-center mt-5 text-muted">
-            <p>Sistema de Integración Aeroportuaria - MTIS &copy; 2024</p>
+            <p>Sistema de Integración Aeroportuaria - MTIS © 2025</p>
         </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

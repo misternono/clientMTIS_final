@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operaciones de Vuelo - Cliente de Integración</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header text-center">
+            <h1>Operaciones de Vuelo - Cliente de Integración</h1>
+            <p class="lead">Sistema de orquestación de operaciones de vuelo integrado con MuleSoft</p>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="operacion-tab" data-bs-toggle="tab" data-bs-target="#operacion" type="button" role="tab" aria-controls="operacion" aria-selected="true">Solicitar Operación</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="response-tab" data-bs-toggle="tab" data-bs-target="#response" type="button" role="tab" aria-controls="response" aria-selected="false">Respuesta API</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="operacion" role="tabpanel" aria-labelledby="operacion-tab">
+                <form id="flightForm">
+                    <div class="form-section">
+                        <h3>Información del Vuelo</h3>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="airlineCode" class="form-label">Código de Aerolínea</label>
+                                <input type="text" class="form-control" id="airlineCode" placeholder="ej. IB" value="IB" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="flightNumber" class="form-label">Número de Vuelo</label>
+                                <input type="text" class="form-control" id="flightNumber" placeholder="ej. 3045" value="3045" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="aircraftType" class="form-label">Tipo de Aeronave</label>
+                                <input type="text" class="form-control" id="aircraftType" placeholder="ej. A320" value="A320">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="originAirportIATA" class="form-label">Aeropuerto Origen</label>
+                                <input type="text" class="form-control" id="originAirportIATA" placeholder="ej. MAD" value="MAD">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="destinationAirportIATA" class="form-label">Aeropuerto Destino</label>
+                                <input type="text" class="form-control" id="destinationAirportIATA" placeholder="ej. BCN" value="BCN">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="operationType" class="form-label">Tipo de Operación</label>
+                                <select class="form-control" id="operationType" required>
+                                    <option value="LANDING">Aterrizaje</option>
+                                    <option value="DEPARTURE">Salida</option>
+                                    <option value="TURNAROUND" selected>Escala</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Horarios</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="scheduledArrivalTime" class="form-label">Hora de Llegada Programada</label>
+                                <input type="datetime-local" class="form-control" id="scheduledArrivalTime" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="scheduledDepartureTime" class="form-label">Hora de Salida Programada</label>
+                                <input type="datetime-local" class="form-control" id="scheduledDepartureTime">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Servicios en Tierra</h3>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_PASSENGER_DISEMBARK" value="PASSENGER_DISEMBARK" checked>
+                                    <label class="form-check-label" for="service_PASSENGER_DISEMBARK">Desembarque de Pasajeros</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_BAGGAGE_UNLOAD" value="BAGGAGE_UNLOAD" checked>
+                                    <label class="form-check-label" for="service_BAGGAGE_UNLOAD">Descarga de Equipaje</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_FUELING" value="FUELING" checked>
+                                    <label class="form-check-label" for="service_FUELING">Repostaje</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_BAGGAGE_LOAD" value="BAGGAGE_LOAD">
+                                    <label class="form-check-label" for="service_BAGGAGE_LOAD">Carga de Equipaje</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_PASSENGER_EMBARK" value="PASSENGER_EMBARK">
+                                    <label class="form-check-label" for="service_PASSENGER_EMBARK">Embarque de Pasajeros</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_CATERING" value="CATERING">
+                                    <label class="form-check-label" for="service_CATERING">Catering</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_CLEANING" value="CLEANING">
+                                    <label class="form-check-label" for="service_CLEANING">Limpieza</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_LAVATORY_SERVICE" value="LAVATORY_SERVICE">
+                                    <label class="form-check-label" for="service_LAVATORY_SERVICE">Servicio de Lavabos</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service_POTABLE_WATER_SERVICE" value="POTABLE_WATER_SERVICE">
+                                    <label class="form-check-label" for="service_POTABLE_WATER_SERVICE">Servicio de Agua Potable</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Configuración de la API</h3>
+                        <div class="mb-3">
+                            <label for="apiUrl" class="form-label">URL de la API</label>
+                                                        <input type="url" class="form-control" id="apiUrl" value="https://d0a5-201-223-203-237.ngrok-free.app/api/solicitar-operacion-vuelo" required>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-shop btn-lg">Solicitar Operación de Vuelo</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="response" role="tabpanel" aria-labelledby="response-tab">
+                <div class="form-section">
+                    <h3>Respuesta de la API</h3>
+                    <div id="responseContainer">
+                        <div id="receiptContainer" style="display: none;">
+                            <!-- El resumen se generará dinámicamente aquí -->
+                        </div>
+                        <pre id="responseOutput">Aquí se mostrará la respuesta de la API cuando se procese la operación...</pre>
+                        <div class="text-center">
+                            <button id="rawJsonBtn" class="btn btn-sm" style="display: none;">Ver JSON Original</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flightForm = document.getElementById('flightForm');
+            const responseOutput = document.getElementById('responseOutput');
+            const responseTab = document.getElementById('response-tab');
+            const receiptContainer = document.getElementById('receiptContainer');
+            const rawJsonBtn = document.getElementById('rawJsonBtn');
+            
+            let lastResponseData = null;
+            
+            // Establecer fecha y hora por defecto para los campos de datetime-local
+            const now = new Date();
+            const arrivalTime = new Date(now.getTime() + 60*60*1000); // 1 hora después
+            const departureTime = new Date(now.getTime() + 3*60*60*1000); // 3 horas después
+            
+            document.getElementById('scheduledArrivalTime').value = formatDatetimeLocal(arrivalTime);
+            document.getElementById('scheduledDepartureTime').value = formatDatetimeLocal(departureTime);
+            
+            // Función para formatear fecha para input datetime-local
+            function formatDatetimeLocal(date) {
+                return date.toISOString().slice(0, 16); // formato yyyy-MM-ddThh:mm
+            }
+            
+            // Toggle entre resumen y JSON
+            rawJsonBtn.addEventListener('click', function() {
+                if (responseOutput.style.display === 'none') {
+                    // Show JSON, hide receipt
+                    responseOutput.style.display = 'block';
+                    receiptContainer.style.display = 'none';
+                    rawJsonBtn.textContent = 'Ver Resumen';
+                } else {
+                    // Show receipt, hide JSON
+                    responseOutput.style.display = 'none';
+                    receiptContainer.style.display = 'block';
+                    rawJsonBtn.textContent = 'Ver JSON Original';
+                }
+            });
+            
+            // Handle form submission
+            flightForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Obtener todos los valores del formulario
+                const apiUrl = document.getElementById('apiUrl').value;
+                const airlineCode = document.getElementById('airlineCode').value;
+                const flightNumber = document.getElementById('flightNumber').value;
+                const aircraftType = document.getElementById('aircraftType').value;
+                const originAirportIATA = document.getElementById('originAirportIATA').value;
+                const destinationAirportIATA = document.getElementById('destinationAirportIATA').value;
+                const operationType = document.getElementById('operationType').value;
+                
+                // Formatear las fechas en formato ISO 8601
+                const arrivalInput = document.getElementById('scheduledArrivalTime').value;
+                const departureInput = document.getElementById('scheduledDepartureTime').value;
+                const scheduledArrivalTime = arrivalInput ? new Date(arrivalInput).toISOString() : null;
+                const scheduledDepartureTime = departureInput ? new Date(departureInput).toISOString() : null;
+                
+                // Recoger los servicios en tierra seleccionados
+                const requestedGroundServices = [];
+                document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                    requestedGroundServices.push(checkbox.value);
+                });
+                
+                // Construir el cuerpo de la solicitud
+                const requestBody = {
+                    airlineCode,
+                    flightNumber,
+                    aircraftType,
+                    originAirportIATA: originAirportIATA || null,
+                    destinationAirportIATA: destinationAirportIATA || null,
+                    scheduledArrivalTime,
+                    scheduledDepartureTime,
+                    operationType,
+                    requestedGroundServices
+                };
+                
+                // Enviar solicitud API
+                sendApiRequest(apiUrl, requestBody);
+            });
+            
+            // Function to send API request
+            function sendApiRequest(url, requestBody) {
+                responseOutput.style.display = 'block';
+                receiptContainer.style.display = 'none';
+                rawJsonBtn.style.display = 'none';
+                
+                responseOutput.textContent = 'Enviando solicitud...';
+                responseTab.click(); // Cambiar a la pestaña de respuesta
+                
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw { status: response.status, data: errorData };
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Almacenar los datos de la respuesta
+                    lastResponseData = data;
+                    
+                    // Mostrar la respuesta en bruto
+                    responseOutput.textContent = JSON.stringify(data, null, 2);
+                    
+                    // Verificamos si tenemos una respuesta de operación completa
+                    if (data.flightId) {
+                        // Generar y mostrar el resumen
+                        generateSummary(data);
+                        receiptContainer.style.display = 'block';
+                        responseOutput.style.display = 'none';
+                        rawJsonBtn.textContent = 'Ver JSON Original';
+                        rawJsonBtn.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    if (error.data) {
+                        responseOutput.textContent = `Error ${error.status}:\n${JSON.stringify(error.data, null, 2)}`;
+                    } else {
+                        responseOutput.textContent = `Error:\n${error.message}\n\nNota: Si estás experimentando problemas de conexión, verifica que:
+1. El servicio MuleSoft esté ejecutándose en la URL correcta
+2. No haya problemas de CORS (Cross-Origin Resource Sharing)
+3. La red permita la conexión al servicio`;
+                    }
+                });
+            }
+            
+            // Function to generate summary HTML
+            f            // En tu archivo HTML, dentro del <script>
+
+            function generateSummary(data) {
+                // 'data' es el objeto JSON recibido de MuleSoft
+                let summaryHTML = `
+                <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #ccc; padding: 20px; border-radius: 5px; background-color: #f9f9f9;">
+                    <div style="text-align: center; margin-bottom: 15px; padding-bottom:10px; border-bottom: 1px solid #eee;">
+                        <h4 style="margin:0; color: #333;">Resumen de Operación de Vuelo</h4>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b>ID Proceso MuleSoft:</b> ${data.mulesoftProcessId || 'N/A'}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <b>Vuelo:</b> ${data.airlineCode || ''} ${data.flightNumber || ''} (ID: ${data.flightId || 'N/A'})
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <b>Detalles:</b>
+                        <ul style="list-style-type: none; padding-left: 10px;">
+                            <li>Aeronave: ${data.aircraftType || 'N/A'}</li>
+                            <li>Ruta: ${data.originAirportIATA || 'N/A'} → ${data.destinationAirportIATA || 'N/A'}</li>
+                            <li>Tipo Operación: ${data.operationType || 'N/A'}</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b>Horarios Programados:</b>
+                        <ul style="list-style-type: none; padding-left: 10px;">
+                            <li>Llegada: ${data.scheduledArrivalTime ? new Date(data.scheduledArrivalTime).toLocaleString() : 'N/A'}</li>
+                            <li>Salida: ${data.scheduledDepartureTime ? new Date(data.scheduledDepartureTime).toLocaleString() : 'N/A'}</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <b>Asignación y Estado Actual:</b>
+                        <ul style="list-style-type: none; padding-left: 10px;">
+                            <li>Puerta Asignada: ${data.assignedGateId || 'No asignada'}</li>
+                            <li>Stand: ${data.assignedStandId || 'No asignado'}</li>
+                            <li>Hora Real Llegada a Puerta: ${data.actualArrivalTimeAtGate ? new Date(data.actualArrivalTimeAtGate).toLocaleString() : 'N/A'}</li>
+                            <li>Estado Terminal Final: ${data.finalTerminalStatus || 'Pendiente'}</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <b>Servicios en Tierra Solicitados:</b>
+                        <ul style="list-style-type: none; padding-left: 10px;">
+                `;
+                
+                if (data.completedGroundServices && data.completedGroundServices.length > 0) {
+                    data.completedGroundServices.forEach(service => {
+                        // Ahora 'service' tiene serviceCode, serviceDisplayName, y statusMessage
+                        summaryHTML += `<li>${service.serviceDisplayName} - ${service.statusMessage}</li>`;
+                    });
+                } else {
+                    summaryHTML += `<li>No se solicitaron o completaron servicios en tierra.</li>`;
+                }
+                
+                summaryHTML += `
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding-top:10px; border-top: 1px solid #eee; text-align: center; font-weight: bold; color: #555;">
+                        ${data.overallMessage || 'Operación procesada.'}
+                    </div>
+                </div>
+                `;
+                
+                receiptContainer.innerHTML = summaryHTML;
+            }
+        });
+    </script>
+</body>
+</html> 
